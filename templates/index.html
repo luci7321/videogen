@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CiKaBOT</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-bg: #0d0221;
+            --darker-bg: #05010e;
+            --text-color: #ffffff;
+            --text-glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(5, 217, 232, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 42, 109, 0.1) 0%, transparent 20%);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .neon-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .neon-text { text-shadow: var(--text-glow); }
+        
+        .neon-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .neon-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--neon-pink);
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px var(--neon-pink),
+                0 0 30px var(--neon-pink);
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            animation: flicker 3s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink);
+            }
+            20%, 24%, 55% { text-shadow: none; }
+        }
+
+        .neon-input {
+            width: 100%;
+            min-height: 150px;
+            background-color: var(--darker-bg);
+            border: 1px solid var(--neon-purple);
+            border-radius: 5px;
+            padding: 15px;
+            color: white;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .neon-input:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .neon-button {
+            font-family: 'Orbitron', sans-serif;
+            background: transparent;
+            color: white;
+            border: 2px solid var(--neon-blue);
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            margin: 5px;
+        }
+
+        .generate-btn {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+        }
+
+        .generate-btn:hover {
+            background: rgba(255, 42, 109, 0.2);
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        .video-container {
+            width: 100%;
+            min-height: 300px;
+            background: var(--darker-bg);
+            border: 2px dashed var(--neon-blue);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .neon-title { font-size: 2.5rem; }
+            .neon-button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="neon-container">
+        <header class="neon-header">
+            <h1 class="neon-title">CIKABOT</h1>
+            <p class="neon-text">Transform text into minecraft parkour videos</p>
+            {% if email %}
+              <div style="position: absolute; top: 20px; right: 20px;">
+                <span style="color: var(--neon-green); margin-right: 15px;">
+                    Welcome, {{ email }}!
+                </span>
+                <a href="{{ url_for('logout') }}" class="neon-button"
+                   style="border-color: var(--neon-pink); color: var(--neon-pink);">
+                  Logout
+                </a>
+                <a href="{{ url_for('create_checkout_session') }}" class="neon-button"
+                   style="border-color: var(--neon-green); color: var(--neon-green); margin-left: 10px;">
+                  Upgrade
+                </a>
+              </div>
+            {% endif %}
+            <p class="neon-text"></p>
+        </header>
+
+        <main>
+            {% if email %}
+                
+                
+                <div style="text-align: center;">
+                    <textarea class="neon-input" placeholder="Enter your text here..." maxlength="50000"></textarea>
+                    <button class="neon-button generate-btn" id="generateBtn">GENERATE</button>
+                </div>
+        
+                <div class="video-container" id="videoContainer">
+                    <p>Video will appear here</p>
+                </div>
+            {% else %}
+                <div style="text-align: center; margin-top: 50px;">
+                    <h2 style="color: var(--neon-pink);">You must be logged in to use this tool</h2>
+                    <a href="/login" class="neon-button" style="border-color: var(--neon-blue); color: var(--neon-blue); margin-right: 10px;">Login</a>
+                    <a href="/register" class="neon-button" style="border-color: var(--neon-green); color: var(--neon-green);">Register</a>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            const text = document.querySelector('.neon-input').value.trim();
+            const videoContainer = document.getElementById('videoContainer');
+            
+            if (!text) {
+                alert('Introdu textul pentru generare');
+                return;
+            }
+
+            videoContainer.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="
+                        width: 50px;
+                        height: 50px;
+                        border: 5px solid ${getComputedStyle(document.documentElement).getPropertyValue('--neon-pink')};
+                        border-top-color: transparent;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto 15px;
+                    "></div>
+                    <p>Se generează videoclipul... <span id="progressValue">0%</span></p>
+                    <div style="width: 200px; height: 5px; background: #222; margin: 10px auto; border-radius: 3px;">
+                        <div id="progressBar" style="width: 0%; height: 100%; background: ${getComputedStyle(document.documentElement).getPropertyValue('--neon-pink')}; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+
+            const progressInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/progress');
+                    const data = await response.json();
+                    document.getElementById('progressValue').textContent = `${data.progress}%`;
+                    document.getElementById('progressBar').style.width = `${data.progress}%`;
+                } catch (e) {
+                    console.error('Eroare la verificarea progresului:', e);
+                }
+            }, 500);
+
+            try {
+                const response = await fetch('/generate_video', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `text=${encodeURIComponent(text)}`
+                });
+
+                clearInterval(progressInterval);
+                
+                if (!response.ok) throw new Error('Eroare la generare');
+
+                const videoBlob = await response.blob();
+                const videoUrl = URL.createObjectURL(videoBlob);
+                
+                videoContainer.innerHTML = `
+                    <video controls autoplay style="width: 100%; max-height: 500px;">
+                        <source src="${videoUrl}" type="video/mp4">
+                        Browserul tău nu suportă tag-ul video.
+                    </video>
+                    <div style="margin-top: 15px;">
+                        <a href="${videoUrl}" download="neon-video.mp4" class="neon-button">DESCARCĂ</a>
+                    </div>
+                `;
+
+            } catch (error) {
+                clearInterval(progressInterval);
+                videoContainer.innerHTML = `
+                    <div style="color: ${getComputedStyle(document.documentElement).getPropertyValue('--neon-pink')}">
+                        <p>Eroare: ${error.message}</p>
+                        <button class="neon-button" onclick="location.reload()">Încearcă din nou</button>
+                    </div>
+                `;
+            }
+            // Adaugă acest cod după descărcarea video-ului
+            videoContainer.querySelector('video').onloadstart = function() {
+                fetch('/cleanup', { method: 'POST' }); // Opțional - notifică serverul
+            };
+        });
+    </script>
+</body>
+</html>
